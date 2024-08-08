@@ -12,4 +12,4 @@ BEGIN
     UPDATE users SET average_score = avg_weight_score WHERE id=user_id;
 END
 $$
-DELIMITER ;)
+DELIMITER ;
