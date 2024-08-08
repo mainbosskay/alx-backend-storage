@@ -7,7 +7,7 @@ BEGIN
     SET avg_weight_score = (SELECT SUM(score * weight) / SUM(weight)
 			FROM users AS Users
 			JOIN corrections as Corrct ON Users.id=Corrct.user_id
-                        JOIN projects AS Proj ON Corct.project_id=Proj.id
+                        JOIN projects AS Proj ON Corrct.project_id=Proj.id
                         WHERE Users.id=user_id);
     UPDATE users SET average_score = avg_weight_score WHERE id=user_id;
 END
