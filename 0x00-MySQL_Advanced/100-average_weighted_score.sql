@@ -9,7 +9,7 @@ BEGIN
 			JOIN corrections as Corrct ON Users.id=Corrct.user_id
                         JOIN projects AS Proj ON Corct.project_id=Proj.id
                         WHERE Users.id=user_id);
-    UPDATE users SET average_score = weight_avg_score WHERE id=user_id;
+    UPDATE users SET average_score = avg_weight_score WHERE id=user_id;
 END
 $$
 DELIMITER ;)
