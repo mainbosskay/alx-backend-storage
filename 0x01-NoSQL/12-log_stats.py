@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Module that provides stats about Nginx logs in MongoDB"""
+from pymongo import MongoClient
 
 
 def nginx_log_statistics(nginx_collection):
