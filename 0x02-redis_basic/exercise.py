@@ -43,10 +43,10 @@ def replay(method: Callable) -> None:
     methodName = method.__qualname__
     key_input = f"{methodName}:inputs"
     key_output = f"{methodName}:outputs"
-    callCountMethod = 0
+    methodCallCount = 0
     if instRedis.exists(methodName) != 0:
-        callCountMethod = int(instRedis.get(methodName))
-    print(f"{methodName} was called {callCountMethod} times:")
+        methodCallCount = int(instRedis.get(methodName))
+    print(f"{methodName} was called {methodCallCount} times:")
     inputValues = instRedis.lrange(key_input, 0, -1)
     outputValues = instRedis.lrange(key_output 0, -1)
     for inputVal, outputVal in zip(inputValues, outputValues):
