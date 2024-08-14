@@ -3,10 +3,12 @@
 import redis
 import uuid
 from typing import Union, Callable, Any
+from functools import wraps
 
 
 def count_calls(method: Callable) -> Callable:
     """Decorator that tracks number of calls made to methos within Cache"""
+    @wraps(method)
     def handler(self, *args, **kwargs) -> Any:
         """Incrementing call counter for decorated method to invokes it"""
         if isinstance(self._redis, redis.Redis):
