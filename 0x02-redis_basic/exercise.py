@@ -5,6 +5,16 @@ import uuid
 from typing import Union, Callable
 
 
+def count_calls(method: Callable) -> Callable:
+    """Decorator that tracks number of calls made to methos within Cache"""
+    def handler(self, *args, **kwargs) -> Any:
+        """Incrementing call counter for decorated method to invokes it"""
+        if isinstance(self._redis, redis.Redis):
+            self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return handler
+
+
 class Cache:
     """Class that manages data storage in Redis database"""
     def __init__(self) -> None:
@@ -12,6 +22,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb(True)
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Storing a value in database and returns generated key"""
         randomKey = str(uuid.uuid4())
