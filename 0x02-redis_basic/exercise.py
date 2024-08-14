@@ -2,7 +2,7 @@
 """Module for utilizing the NoSQL data storage Redis basic"""
 import redis
 import uuid
-from typing import Union, Callable
+from typing import Union, Callable, Any
 
 
 def count_calls(method: Callable) -> Callable:
