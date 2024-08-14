@@ -17,6 +17,22 @@ def count_calls(method: Callable) -> Callable:
     return handler
 
 
+def call_history(method: Callable) -> Callable:
+    """Decorator that tracks details of call of method within Cache"""
+    @wraps(method)
+    def handler(self, *args, **kwargs) -> Any:
+        """Storing method call details in Redis and returns output"""
+        key_input = f"{method.__qualname__}:inputs"
+        key_output = f"{method.__qualname__}:outputs"
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(key_input, str(args))
+        methodResult = method(self, *args, **kwargs)
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(key_output, methodResult)
+        return methodResult
+    return handler
+
+
 class Cache:
     """Class that manages data storage in Redis database"""
     def __init__(self) -> None:
@@ -24,9 +40,10 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb(True)
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
-        """Storing a value in database and returns generated key"""
+        """Stores a value in database and returns generated key"""
         randomKey = str(uuid.uuid4())
         self._redis.set(randomKey, data)
         return randomKey
