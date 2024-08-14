@@ -33,6 +33,26 @@ def call_history(method: Callable) -> Callable:
     return handler
 
 
+def replay(method: Callable) -> None:
+    """Displaying call history for method decorated"""
+    if method is None or not hasattr(method, "__self__"):
+        return
+    instRedis = getattr(method.__self__, "_redis", None)
+    if not isinstance(instRedis, redis.Redis):
+        return
+    methodName = method.__qualname__
+    key_input = f"{methodName}:inputs"
+    key_output = f"{methodName}:outputs"
+    callCountMethod = 0
+    if instRedis.exists(methodName) != 0:
+        callCountMethod = int(instRedis.get(methodName))
+    print(f"{methodName} was called {callCountMethod} times:")
+    inputValues = instRedis.lrange(key_input, 0, -1)
+    outputValues = instRedis.lrange(key_output 0, -1)
+    for inputVal, outputVal in zip(inputValues, outputValues):
+        print(f"{methodName}(*{inputVal.decode('utf-8')}) -> {outputVal}")
+
+
 class Cache:
     """Class that manages data storage in Redis database"""
     def __init__(self) -> None:
