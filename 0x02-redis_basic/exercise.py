@@ -37,18 +37,18 @@ def replay(method: Callable) -> None:
     """Displaying call history for method decorated"""
     if method is None or not hasattr(method, "__self__"):
         return
-    instRedis = getattr(method.__self__, "_redis", None)
-    if not isinstance(instRedis, redis.Redis):
+    redisInst = getattr(method.__self__, "_redis", None)
+    if not isinstance(redisInst, redis.Redis):
         return
     methodName = method.__qualname__
     key_input = f"{methodName}:inputs"
     key_output = f"{methodName}:outputs"
     methodCallCount = 0
-    if instRedis.exists(methodName) != 0:
-        methodCallCount = int(instRedis.get(methodName))
+    if redisInst.exists(methodName) != 0:
+        methodCallCount = int(redisInst.get(methodName))
     print(f"{methodName} was called {methodCallCount} times:")
-    inputValues = instRedis.lrange(key_input, 0, -1)
-    outputValues = instRedis.lrange(key_output 0, -1)
+    inputValues = redisInst.lrange(key_input, 0, -1)
+    outputValues = redisInst.lrange(key_output 0, -1)
     for inputVal, outputVal in zip(inputValues, outputValues):
         print(f"{methodName}(*{inputVal.decode('utf-8')}) -> {outputVal}")
 
