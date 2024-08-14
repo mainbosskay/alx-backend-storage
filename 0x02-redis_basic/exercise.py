@@ -2,6 +2,7 @@
 """Module for utilizing the NoSQL data storage Redis basic"""
 import redis
 import uuid
+from typing import Union
 
 
 class Cache:
